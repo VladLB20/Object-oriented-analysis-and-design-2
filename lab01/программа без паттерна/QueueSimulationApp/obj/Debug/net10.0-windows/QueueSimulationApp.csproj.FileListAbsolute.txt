@@ -1,0 +1,28 @@
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.AssemblyInfo.cs
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\bin\Debug\net10.0-windows\QueueSimulationApp.exe
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\bin\Debug\net10.0-windows\QueueSimulationApp.deps.json
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\bin\Debug\net10.0-windows\QueueSimulationApp.runtimeconfig.json
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\bin\Debug\net10.0-windows\QueueSimulationApp.dll
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\bin\Debug\net10.0-windows\QueueSimulationApp.pdb
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.dll
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\obj\Debug\net10.0-windows\refint\QueueSimulationApp.dll
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.pdb
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.genruntimeconfig.cache
+C:\Users\User\Desktop\лабы\2 семестр\программа 1\QueueSimulationApp\obj\Debug\net10.0-windows\ref\QueueSimulationApp.dll
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\bin\Debug\net10.0-windows\QueueSimulationApp.exe
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\bin\Debug\net10.0-windows\QueueSimulationApp.deps.json
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\bin\Debug\net10.0-windows\QueueSimulationApp.runtimeconfig.json
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\bin\Debug\net10.0-windows\QueueSimulationApp.dll
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\bin\Debug\net10.0-windows\QueueSimulationApp.pdb
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.AssemblyInfoInputs.cache
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.AssemblyInfo.cs
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.dll
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\obj\Debug\net10.0-windows\refint\QueueSimulationApp.dll
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.pdb
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\obj\Debug\net10.0-windows\QueueSimulationApp.genruntimeconfig.cache
+C:\Users\user\Desktop\ТГУ\3 курс\ооап 2 семестр\лаба1\программа 2\QueueSimulationApp\obj\Debug\net10.0-windows\ref\QueueSimulationApp.dll
