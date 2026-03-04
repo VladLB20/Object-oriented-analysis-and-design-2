@@ -195,5 +195,11 @@ namespace QueueSimulationApp
                 OnEvent?.Invoke("Моделирование остановлено пользователем");
             }
         }
+
+         public interface IMyChannel<T>
+        {
+            T Clone();
+        }
     }
+
 }
