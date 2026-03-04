@@ -196,10 +196,7 @@ namespace QueueSimulationApp
             }
         }
 
-         public interface IMyChannel<T>
-        {
-            T Clone();
-        }
     }
 
 }
+
