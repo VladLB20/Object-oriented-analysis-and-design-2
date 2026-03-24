@@ -5,7 +5,7 @@ wxIMPLEMENT_APP(App);
 
 bool App::OnInit() 
 {
-    MainFrame* frame = new MainFrame("Часы ");
+    MainFrame* frame = new MainFrame("Clock");
     frame->Show(true);
     return true;
 }
