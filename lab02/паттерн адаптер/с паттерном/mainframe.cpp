@@ -28,7 +28,6 @@ MainFrame::MainFrame(const wxString& title)
     wxStaticText* secondsLabel = new wxStaticText(mainPanel, wxID_ANY, "Seconds:");
     m_secondsSpin = new wxSpinCtrl(mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 59, m_currentSecond);
 
-    // События фокуса для спин-контролов
     m_hoursSpin->Bind(wxEVT_SET_FOCUS, &MainFrame::OnSpinFocus, this);
     m_hoursSpin->Bind(wxEVT_KILL_FOCUS, &MainFrame::OnSpinKillFocus, this);
     m_minutesSpin->Bind(wxEVT_SET_FOCUS, &MainFrame::OnSpinFocus, this);
@@ -42,7 +41,6 @@ MainFrame::MainFrame(const wxString& title)
     wxFont font(24, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_digitalDisplay->SetFont(font);
 
-    // Компоновка
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     mainSizer->Add(m_clockPanel, 1, wxEXPAND | wxALL, 10);
 
