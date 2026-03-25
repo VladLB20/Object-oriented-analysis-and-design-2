@@ -4,7 +4,7 @@
 Реализовать проект, который преобразует время, введенное в цифровых часах, во время, выводимое на аналоговые часы.
 
 ## 2. Диаграмма классов для паттерна
-![Реализация паттерна](pattern adapt.png)
+![Реализация паттерна](patternadapt.png)
 
 AnalogClock хранит углы поворота стрелок и предоставляет методы setHourAngle, setMinuteAngle, setSecondAngle\
 Цифровой интерфейс  — DigitalClock с единственным методом setTime(int hours, int minutes, int seconds), который ожидает клиент (главное окно MainFrame)
