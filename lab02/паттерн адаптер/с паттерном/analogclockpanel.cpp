@@ -53,15 +53,12 @@ void AnalogClockPanel::OnPaint(wxPaintEvent& WXUNUSED(event)) {
     double scale = side / 100.0;
     gc->Scale(scale, scale);
 
-    // Циферблат
     gc->SetPen(wxPen(*wxBLACK, 1));
     gc->SetBrush(wxBrush(*wxWHITE));
     gc->DrawEllipse(-48, -48, 96, 96);
 
-    // Подписи цифр (без меток)
     DrawClockNumbers(gc);
 
-    // Часовая стрелка
     gc->PushState();
     gc->Rotate(m_clock->hourAngle() * M_PI / 180.0);
     gc->SetPen(wxPen(*wxBLACK, 2));
@@ -75,7 +72,6 @@ void AnalogClockPanel::OnPaint(wxPaintEvent& WXUNUSED(event)) {
     gc->StrokePath(pathHour);
     gc->PopState();
 
-    // Минутная стрелка
     gc->PushState();
     gc->Rotate(m_clock->minuteAngle() * M_PI / 180.0);
     gc->SetPen(wxPen(*wxBLUE, 2));
@@ -89,7 +85,6 @@ void AnalogClockPanel::OnPaint(wxPaintEvent& WXUNUSED(event)) {
     gc->StrokePath(pathMin);
     gc->PopState();
 
-    // Секундная стрелка
     gc->PushState();
     gc->Rotate(m_clock->secondAngle() * M_PI / 180.0);
     gc->SetPen(wxPen(*wxRED, 1));
@@ -103,7 +98,6 @@ void AnalogClockPanel::OnPaint(wxPaintEvent& WXUNUSED(event)) {
     gc->StrokePath(pathSec);
     gc->PopState();
 
-    // Центральная точка
     gc->SetBrush(*wxBLACK_BRUSH);
     gc->DrawEllipse(-4, -4, 8, 8);
 
