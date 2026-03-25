@@ -95,7 +95,6 @@ void MainFrame::UpdateTime() {
     m_currentMinute = m_minutesSpin->GetValue();
     m_currentSecond = m_secondsSpin->GetValue();
 
-    // Прямое вычисление углов (без адаптера)
     double secondAngle = 6.0 * m_currentSecond;
     double minuteAngle = 6.0 * m_currentMinute + 0.1 * m_currentSecond;
     double hourAngle = 30.0 * (m_currentHour % 12) + 0.5 * m_currentMinute + (30.0 / 3600.0) * m_currentSecond;
