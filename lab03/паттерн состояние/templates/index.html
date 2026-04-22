@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление доставкой</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f0f2f5; }
+        .container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .map-container { flex: 3; height: 70vh; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .sidebar { flex: 1; min-width: 280px; background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .status { font-size: 24px; font-weight: bold; color: #ff6b00; margin: 10px 0; }
+        .notifications-container { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+        .notification-panel { background: #f9f9f9; border-radius: 8px; padding: 10px; border-left: 4px solid; }
+        .notification-panel.customer { border-left-color: #2196F3; }
+        .notification-panel.warehouse { border-left-color: #FF9800; }
+        .notification-panel.courier { border-left-color: #4CAF50; }
+        .notification-list { max-height: 150px; overflow-y: auto; font-size: 13px; }
+        .notification { padding: 5px; border-bottom: 1px solid #ddd; }
+        button { background: #ff6b00; border: none; padding: 10px 20px; color: white; border-radius: 8px; cursor: pointer; font-size: 16px; margin-right: 10px; margin-top: 10px; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .point-list { margin-top: 20px; }
+        .point-item { background: #f1f1f1; margin: 5px 0; padding: 8px; border-radius: 6px; display: flex; justify-content: space-between; }
+        .delete-point { background: red; border: none; color: white; border-radius: 20px; cursor: pointer; padding: 2px 8px; }
+        .truck-marker { background: none; font-size: 28px; text-align: center; line-height: 1; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5)); }
+    </style>
+</head>
+<body>
+    <h1>Управление доставкой</h1>
+    <div class="container">
+        <div class="map-container">
+            <div id="map" style="height: 100%;"></div>
+        </div>
+        <div class="sidebar">
+            <h3>Заказ #<span id="order-id"></span></h3>
+            <p>Покупатель: <span id="customer"></span></p>
+            <p>Статус: <span id="status" class="status"></span></p>
+            <div>
+                <button id="next-btn">Следующий этап</button>
+                <button id="cancel-btn">Отменить</button>
+                <button id="save-route-btn">Сохранить маршрут</button>
+            </div>
+            <div class="point-list">
+                <h4>Точки маршрута (клик по карте – добавить)</h4>
+                <ul id="points-list" style="list-style: none; padding: 0;"></ul>
+            </div>
+            <div class="notifications-container">
+                <div class="notification-panel customer">
+                    <h4>Уведомления для покупателя</h4>
+                    <div id="customer-notifications" class="notification-list"></div>
+                </div>
+                <div class="notification-panel warehouse">
+                    <h4>Уведомления для склада</h4>
+                    <div id="warehouse-notifications" class="notification-list"></div>
+                </div>
+                <div class="notification-panel courier">
+                    <h4>Уведомления для курьера</h4>
+                    <div id="courier-notifications" class="notification-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let map;
+        let markers = [];
+        let routePoints = [];
+        let currentMarker = null;
+        let routeLocked = false;
+
+        function initMap() {
+            map = L.map('map').setView([55.75, 37.62], 12);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+            }).addTo(map);
+
+            map.on('click', function(e) {
+                if (routeLocked) {
+                    alert("Маршрут уже сохранён и не может быть изменён");
+                    return;
+                }
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+                const name = prompt("Введите название точки (например, Склад, ПВЗ, Адрес доставки):", "Новая точка");
+                if (name) {
+                    addPoint({lat, lng, name});
+                }
+            });
+        }
+
+        function addPoint(point) {
+            routePoints.push(point);
+            const marker = L.marker([point.lat, point.lng], { draggable: !routeLocked }).addTo(map);
+            marker.bindPopup(point.name);
+            if (!routeLocked) {
+                marker.on('dragend', function(e) {
+                    const newPos = e.target.getLatLng();
+                    point.lat = newPos.lat;
+                    point.lng = newPos.lng;
+                    updatePointsList();
+                    drawPolyline();
+                });
+            }
+            markers.push(marker);
+            updatePointsList();
+            drawPolyline();
+        }
+
+        function removePoint(index) {
+            if (routeLocked) {
+                alert("Маршрут уже сохранён и не может быть изменён");
+                return;
+            }
+            map.removeLayer(markers[index]);
+            markers.splice(index, 1);
+            routePoints.splice(index, 1);
+            updatePointsList();
+            drawPolyline();
+        }
+
+        function updatePointsList() {
+            const list = document.getElementById('points-list');
+            list.innerHTML = '';
+            routePoints.forEach((p, idx) => {
+                const li = document.createElement('li');
+                li.className = 'point-item';
+                li.innerHTML = `<span>${idx+1}. ${p.name} (${p.lat.toFixed(4)}, ${p.lng.toFixed(4)})</span>`;
+                if (!routeLocked) {
+                    const btn = document.createElement('button');
+                    btn.className = 'delete-point';
+                    btn.innerText = '✖';
+                    btn.dataset.idx = idx;
+                    btn.onclick = () => removePoint(idx);
+                    li.appendChild(btn);
+                }
+                list.appendChild(li);
+            });
+        }
+
+        function drawPolyline() {
+            if (window.polyline) map.removeLayer(window.polyline);
+            const latlngs = routePoints.map(p => [p.lat, p.lng]);
+            if (latlngs.length > 1) {
+                window.polyline = L.polyline(latlngs, { color: 'blue', weight: 4, opacity: 0.7 }).addTo(map);
+            }
+        }
+
+        function updateCurrentPosition(index) {
+            if (currentMarker) map.removeLayer(currentMarker);
+            if (routePoints.length > 0 && index >= 0 && index < routePoints.length) {
+                const point = routePoints[index];
+                const truckIcon = L.divIcon({ html: '🚚', iconSize: [30, 30], className: 'truck-marker' });
+                currentMarker = L.marker([point.lat, point.lng], { icon: truckIcon }).addTo(map);
+                currentMarker.bindPopup(`Товар: ${point.name}`).openPopup();
+                map.setView([point.lat, point.lng], 14);
+            }
+        }
+
+        function animateMove(fromIdx, toIdx, duration = 1500) {
+            if (fromIdx === toIdx) return Promise.resolve();
+            const from = routePoints[fromIdx];
+            const to = routePoints[toIdx];
+            const start = { lat: from.lat, lng: from.lng };
+            const end = { lat: to.lat, lng: to.lng };
+            const startTime = performance.now();
+            return new Promise((resolve) => {
+                function step(now) {
+                    const t = Math.min(1, (now - startTime) / duration);
+                    const lat = start.lat + (end.lat - start.lat) * t;
+                    const lng = start.lng + (end.lng - start.lng) * t;
+                    if (currentMarker) currentMarker.setLatLng([lat, lng]);
+                    if (t < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        resolve();
+                    }
+                }
+                requestAnimationFrame(step);
+            });
+        }
+
+        async function loadStatus() {
+            const resp = await fetch('/api/status');
+            const data = await resp.json();
+            const order = data.order;
+            document.getElementById('order-id').innerText = order.order_id;
+            document.getElementById('customer').innerText = order.customer;
+            document.getElementById('status').innerText = order.status;
+
+            const newLocked = order.route_locked;
+            if (newLocked !== routeLocked) {
+                routeLocked = newLocked;
+                const saveBtn = document.getElementById('save-route-btn');
+                saveBtn.disabled = routeLocked;
+                if (routeLocked && markers.length === 0 && order.route.points.length > 0) {
+                    order.route.points.forEach(p => addPoint(p));
+                }
+                updatePointsList();
+            }
+
+            const customerDiv = document.getElementById('customer-notifications');
+            const warehouseDiv = document.getElementById('warehouse-notifications');
+            const courierDiv = document.getElementById('courier-notifications');
+
+            customerDiv.innerHTML = '';
+            warehouseDiv.innerHTML = '';
+            courierDiv.innerHTML = '';
+
+            data.notifications.customer.slice().reverse().forEach(n => {
+                const div = document.createElement('div');
+                div.className = 'notification';
+                div.innerText = n;
+                customerDiv.appendChild(div);
+            });
+            data.notifications.warehouse.slice().reverse().forEach(n => {
+                const div = document.createElement('div');
+                div.className = 'notification';
+                div.innerText = n;
+                warehouseDiv.appendChild(div);
+            });
+            data.notifications.courier.slice().reverse().forEach(n => {
+                const div = document.createElement('div');
+                div.className = 'notification';
+                div.innerText = n;
+                courierDiv.appendChild(div);
+            });
+
+            const serverPoints = order.route.points;
+            if (serverPoints && serverPoints.length > 0 && routePoints.length === 0 && !routeLocked) {
+                serverPoints.forEach(p => addPoint(p));
+            }
+
+            const currentIdx = order.route.current_index;
+            if (currentIdx !== undefined && currentIdx >= 0 && currentIdx < routePoints.length) {
+                updateCurrentPosition(currentIdx);
+            } else if (routePoints.length > 0) {
+                updateCurrentPosition(0);
+            }
+
+            const nextBtn = document.getElementById('next-btn');
+            const cancelBtn = document.getElementById('cancel-btn');
+            if (order.status === 'Доставлен' || order.status === 'Отменён') {
+                nextBtn.disabled = true;
+                cancelBtn.disabled = true;
+            } else {
+                nextBtn.disabled = false;
+                cancelBtn.disabled = false;
+            }
+        }
+
+        async function saveRoute() {
+            if (routeLocked) {
+                alert("Маршрут уже сохранён и не может быть изменён");
+                return;
+            }
+            const resp = await fetch('/api/route', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ points: routePoints })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                alert('Маршрут сохранён!');
+                routeLocked = true;
+                document.getElementById('save-route-btn').disabled = true;
+                updatePointsList();
+                loadStatus();
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function nextStep() {
+            const currentStatus = document.getElementById('status').innerText;
+            if (currentStatus === 'В пути') {
+                const resp = await fetch('/api/status');
+                const data = await resp.json();
+                const currentIdx = data.order.route.current_index;
+                const nextIdx = currentIdx + 1;
+                if (nextIdx < routePoints.length) {
+                    await animateMove(currentIdx, nextIdx);
+                }
+            }
+            const resp = await fetch('/api/next', { method: 'POST' });
+            const result = await resp.json();
+            if (!result.success) {
+                alert(result.error);
+            }
+            loadStatus();
+        }
+
+        async function cancelOrder() {
+            if (confirm('Отменить заказ?')) {
+                const resp = await fetch('/api/cancel', { method: 'POST' });
+                const result = await resp.json();
+                if (!result.success) {
+                    alert(result.error);
+                }
+                loadStatus();
+            }
+        }
+
+        window.onload = () => {
+            initMap();
+            loadStatus();
+            document.getElementById('next-btn').onclick = nextStep;
+            document.getElementById('cancel-btn').onclick = cancelOrder;
+            document.getElementById('save-route-btn').onclick = saveRoute;
+            setInterval(loadStatus, 3000);
+        };
+    </script>
+</body>
+</html>
